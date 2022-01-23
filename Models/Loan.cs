@@ -14,7 +14,7 @@ namespace LibWepApi.Models
 		public int employeeID { get; set; }
 		public DateTime loanDate { get; set; }
 		public DateTime returnDate { get; set; }
-
+		public double pay { get; set; }
 		public int loanID { get; set; }
 
 		public DataTable dt = new DataTable();
@@ -41,6 +41,18 @@ namespace LibWepApi.Models
 				myCommand.Parameters.Add("@bookID", MySqlDbType.Int32).Value = loan.bookID;
 				myCommand.ExecuteNonQuery();
 				con.Close();
+				TimeSpan ts = returnDate - loanDate;
+
+				if (ts.Days > 30)
+				{
+					con.Open();
+
+					pay = (ts.Days - returnDate.Day) * 2;
+					cmd.CommandText = "UPDATE `loan` SET Pay = @pay";
+					cmd.Parameters.Add("@pay", MySqlDbType.Double).Value = pay;
+					cmd.ExecuteNonQuery();
+					con.Close();
+				}
 			}
 
 		}
