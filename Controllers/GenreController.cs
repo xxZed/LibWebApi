@@ -1,6 +1,7 @@
 ﻿using LibWepApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,54 +11,41 @@ namespace LibWepApi.Controllers
 {
     public class GenreController : ApiController
     {
-        List<Genre> gen = new List<Genre>();
+        Genre gen = new Genre();
 
         public GenreController()
 		{
-            gen.Add(new Genre { genreID = 1, genre = "Sci-fi" });
-            gen.Add(new Genre { genreID = 2, genre = "Thriller" });
-            gen.Add(new Genre { genreID = 3, genre = "Comedy" });
-            gen.Add(new Genre { genreID = 4, genre = "Action" });
-
+            
         }
-        [Route("api/Genre/GetGenreName/")]
-        [HttpGet]
-        public List<string> GetGenreName()
-        {
-            List<string> output = new List<string>();
-            foreach (var g in gen)
-            {
 
-                output.Add(g.genre);
-            }
-            return output;
-        }
         // GET: api/Genre
-        public List<Genre> Get()
+        public DataSet Get()
         {
-            return gen;
+            return gen.Read_data();
         }
 
         // GET: api/Genre/5
-        public Genre Get(int id)
+        public DataSet Get(int id)
         {
-            return gen.Where(x => x.genreID == id).FirstOrDefault();
+            return gen.Read_data(id);
         }
 
         // POST: api/Genre
         public void Post(Genre val)
         {
-            gen.Add(val);
+            gen.Create_data(val);
         }
 
         // PUT: api/Genre/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]Genre value)
         {
+            gen.Update_data(id, value);
         }
 
         // DELETE: api/Genre/5
         public void Delete(int id)
         {
+            gen.Delete_data(id);
         }
     }
 }

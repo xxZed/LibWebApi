@@ -1,5 +1,7 @@
-﻿using System;
+﻿using LibWepApi.Models;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,30 +12,38 @@ namespace LibWepApi.Controllers
     public class LoanController : ApiController
     {
         // GET: api/Loan
-        public IEnumerable<string> Get()
+        Loan loan = new Loan();
+        public LoanController()
         {
-            return new string[] { "value1", "value2" };
+
+        }
+        public DataSet Get()
+        {
+            return loan.Read_data();
         }
 
         // GET: api/Loan/5
-        public string Get(int id)
+        public DataSet Get(int id)
         {
-            return "value";
+            return loan.Read_data(id);
         }
 
         // POST: api/Loan
-        public void Post([FromBody]string value)
+        public void Post(Loan val)
         {
+            loan.Create_data(val);
         }
 
         // PUT: api/Loan/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]Loan value)
         {
+            loan.Update_data(id,value);
         }
 
         // DELETE: api/Loan/5
         public void Delete(int id)
         {
+            loan.Delete_data(id);
         }
     }
 }

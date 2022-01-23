@@ -1,6 +1,7 @@
 ﻿using LibWepApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,43 +11,37 @@ namespace LibWepApi.Controllers
 {
     public class EmployeeController : ApiController
     {
-        List<Employee> employee = new List<Employee>();
+        Employee employee = new Employee();
         
 
-        public EmployeeController()
-		{
-            employee.Add(
-                new Employee 
-                { employeeId = 1, name = "Zed", lastName = "Name", address = "Split 60", contact = "+385 97 777 2222", salary = 70000, oib = "2134567890123", note = "Random note on a random person with a random mouse", employeeLibId = 1 }
-                );
-		}
-
         // GET: api/Employee
-        public List<Employee> Get()
+        public DataSet Get()
         {
-            return employee;
+            return employee.Read_data();
         }
 
         // GET: api/Employee/5
-        public Employee Get(int id)
+        public DataSet Get(int id)
         {
-            return employee.Where(x => x.employeeId == id).FirstOrDefault();
+            return employee.Read_data(id);
         }
 
         // POST: api/Employee
         public void Post(Employee val)
         {
-            employee.Add(val);
+            employee.Create_data(val);
         }
 
         // PUT: api/Employee/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]Employee value)
         {
+            employee.Update_data(id, value);
         }
 
         // DELETE: api/Employee/5
         public void Delete(int id)
         {
+            employee.Delete_data(id);
         }
     }
 }
