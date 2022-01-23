@@ -75,6 +75,18 @@ namespace LibWepApi.Models
 
 				cmd.ExecuteNonQuery();
 				con.Close();
+				TimeSpan ts = returnDate - loanDate;
+
+				if (ts.Days > 30)
+				{
+					con.Open();
+
+					pay = (ts.Days - returnDate.Day) * 2;
+					cmd.CommandText = "UPDATE `loan` SET Pay = @pay";
+					cmd.Parameters.Add("@pay", MySqlDbType.Double).Value = pay;
+					cmd.ExecuteNonQuery();
+					con.Close();
+				}
 			}
 		}
 
