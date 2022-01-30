@@ -57,7 +57,6 @@ namespace LibWepApi.Models
 			}
 
 		}
-
 		public void Update_data(int id, Loan loan)
 		{
 			con.Open();
