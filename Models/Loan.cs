@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using MySql.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -113,7 +114,8 @@ namespace LibWepApi.Models
 		
 		public DataSet Read_data()
 		{
-			string query = "SELECT * FROM `loan`  ";
+			dt.Clear();
+			string query = "SELECT * FROM loan";
 			MySqlDataAdapter MDA = new MySqlDataAdapter(query, con);
 			MDA.Fill(ds);
 			return ds;
@@ -134,7 +136,6 @@ namespace LibWepApi.Models
 			MySqlDataAdapter MDA = new MySqlDataAdapter();
 			MDA.SelectCommand = cmd;
 			MDA.Fill(ds);
-
 			con.Close();
 			return ds;
 		}

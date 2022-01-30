@@ -13,13 +13,10 @@ namespace LibWepApi.Controllers
     {
         // GET: api/Loan
         Loan loan = new Loan();
-        public LoanController()
-        {
-
-        }
+       
         public DataSet Get()
         {
-            return loan.Read_data();
+           return loan.Read_data();
         }
 
         // GET: api/Loan/5
