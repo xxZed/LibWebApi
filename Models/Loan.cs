@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace LibWepApi.Models
 {
@@ -32,8 +34,8 @@ namespace LibWepApi.Models
 				cmd.Parameters.Add("@memberID", MySqlDbType.Int32).Value = loan.memberID;
 				cmd.Parameters.Add("@bookID", MySqlDbType.Int32).Value = loan.bookID;
 				cmd.Parameters.Add("@employeeID", MySqlDbType.Int32).Value = loan.employeeID;
-				cmd.Parameters.Add("@loanDate", MySqlDbType.Date).Value = loan.loanDate;
-				cmd.Parameters.Add("@returnDate", MySqlDbType.Date).Value = loan.returnDate;
+				cmd.Parameters.Add("@loanDate", MySqlDbType.Date).Value = loan.loanDate.Date;
+				cmd.Parameters.Add("@returnDate", MySqlDbType.Date).Value = loan.returnDate.Date;
 
 				cmd.ExecuteNonQuery();
 
@@ -42,13 +44,14 @@ namespace LibWepApi.Models
 				myCommand.Parameters.Add("@bookID", MySqlDbType.Int32).Value = loan.bookID;
 				myCommand.ExecuteNonQuery();
 				con.Close();
-				TimeSpan ts = returnDate - loanDate;
+
+				TimeSpan ts = loan.returnDate.Date - loan.loanDate.Date;
 
 				if (ts.Days > 30)
 				{
 					con.Open();
 
-					pay = (ts.Days - returnDate.Day) * 2;
+					pay = (ts.Days - loan.returnDate.Day) * 2;
 					cmd.CommandText = "UPDATE `loan` SET Pay = @pay";
 					cmd.Parameters.Add("@pay", MySqlDbType.Double).Value = pay;
 					cmd.ExecuteNonQuery();
@@ -75,13 +78,14 @@ namespace LibWepApi.Models
 
 				cmd.ExecuteNonQuery();
 				con.Close();
-				TimeSpan ts = returnDate - loanDate;
+
+				TimeSpan ts = loan.returnDate.Date - loan.loanDate.Date;
 
 				if (ts.Days > 30)
 				{
 					con.Open();
 
-					pay = (ts.Days - returnDate.Day) * 2;
+					pay = (ts.Days - loan.returnDate.Day) * 2;
 					cmd.CommandText = "UPDATE `loan` SET Pay = @pay";
 					cmd.Parameters.Add("@pay", MySqlDbType.Double).Value = pay;
 					cmd.ExecuteNonQuery();
@@ -111,23 +115,25 @@ namespace LibWepApi.Models
 		}
 
 		
-		public DataSet Read_data()
+		public DataTable Read_data()
 		{
 			dt.Clear();
-			string query = "SELECT * FROM loan";
+			string query = "SELECT * FROM loan ";
 			MySqlDataAdapter MDA = new MySqlDataAdapter(query, con);
 			MDA.Fill(ds);
-			return ds;
+			DataTable data = ds.Tables[0];
+			con.Close();
+			return data;
 		}
 
-		public DataSet Read_data(int id)
+		public DataTable Read_data(int id)
 		{
 			con.Open();
 
 			dt.Clear();
 			MySqlCommand cmd = new MySqlCommand();
 
-			cmd.CommandText = "SELECT * FROM `loan` ` WHERE LoanID = @loanID";
+			cmd.CommandText = "SELECT * FROM `loan` WHERE LoanID = @loanID";
 			cmd.Connection = con;
 			cmd.Parameters.Add("@loanID", MySqlDbType.Int32).Value = id;
 			cmd.ExecuteNonQuery();
@@ -135,10 +141,44 @@ namespace LibWepApi.Models
 			MySqlDataAdapter MDA = new MySqlDataAdapter();
 			MDA.SelectCommand = cmd;
 			MDA.Fill(ds);
-			con.Close();
-			return ds;
-		}
 
+			DataTable data = ds.Tables[0];
+			con.Close();
+			return data;
+		}
+		public DataTable Read_Book()
+		{
+			con.Open();
+			dt.Clear();
+			string query = "SELECT * FROM `book`";
+			MySqlDataAdapter MDA = new MySqlDataAdapter(query, con);
+			MDA.Fill(ds);
+			DataTable data = ds.Tables[0];
+			con.Close();
+			return data;
+		}
+		public DataTable Read_Member()
+		{
+			con.Open();
+			dt.Clear();
+			string query = "SELECT * FROM `member`";
+			MySqlDataAdapter MDA = new MySqlDataAdapter(query, con);
+			MDA.Fill(ds);
+			DataTable data = ds.Tables[0];
+			con.Close();
+			return data;
+		}
+		public DataTable Read_Employee()
+		{
+			con.Open();
+			dt.Clear();
+			string query = "SELECT * FROM `employee`";
+			MySqlDataAdapter MDA = new MySqlDataAdapter(query, con);
+			MDA.Fill(ds);
+			DataTable data = ds.Tables[0];
+			con.Close();
+			return data;
+		}
 	}
 }
 
